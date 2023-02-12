@@ -1,19 +1,23 @@
 from django.http import HttpResponseRedirect, Http404
 from django.core import mail
-from django.shortcuts import render
+from django.shortcuts import render, resolve_url as r
 from django.template.loader import render_to_string
-from django.contrib import messages
 from django.conf import settings
 from eventex.subscriptions.forms import SubscriptionForm
 from eventex.subscriptions.models import Subscription
 
 # Create your views here.
-def subscribe(request):
+def new(request):
 
     if request.method == 'POST':
         return create(request)
-    else:
-        return new(request)
+
+    return empty_form(request)
+
+def empty_form(request):
+
+        return render(request, 'subscription_form.html',
+         {'form': SubscriptionForm()})
 
 def create(request):
     form = SubscriptionForm(request.POST)
@@ -32,15 +36,7 @@ def create(request):
         {'subscription': subscription}
     )
 
-    #Success feedback
-    messages.success(request, "Inscrição realizada com sucesso!")
-
-    return HttpResponseRedirect('/inscricao/{}/'.format(subscription.pk))
-
-def new(request):
-
-        return render(request, 'subscription_form.html',
-         {'form': SubscriptionForm()})
+    return HttpResponseRedirect(r('subscriptions:detail', subscription.pk))
 
 def detail(request, pk):
 
