@@ -5,7 +5,7 @@ from django.shortcuts import resolve_url as r
 
 class HomeTest(TestCase):
 
-    #fixtures =['keynotes.json']
+    fixtures =['keynotes.json']
 
     def setUp(self):
         self.response = self.client.get(r('home'))
@@ -21,13 +21,9 @@ class HomeTest(TestCase):
     def test_subscription_link(self):
         expected = 'href="{}"'.format(r('subscriptions:new'))
         self.assertContains(self.response, expected)
-
-
-    #precisa das fixtures funcionando
-    """
+    
     def test_speakers(self):
         
-
         contents = [
             'Grace Hopper',
             'http://hbn.link/hopper-pic',
@@ -39,7 +35,10 @@ class HomeTest(TestCase):
             with self.subTest():
                 self.assertContains(self.response, expected)
 
-    """
     def test_speakers_link(self):
         expected = 'href="{}#speakers"'.format(r('home'))
+        self.assertContains(self.response, expected)
+
+    def test_talks_link(self):
+        expected = 'href="{}"'.format(r('talk_list'))
         self.assertContains(self.response, expected)
